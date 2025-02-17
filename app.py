@@ -4,13 +4,14 @@ import json
 import requests
 from bs4 import BeautifulSoup
 import re
+import os
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
 
 # Google Custom Search API configuration
-GOOGLE_API_KEY = "AIzaSyCPGkcOhkPEvxKuSg1AMlO0374NmbhCZiY"
-SEARCH_ENGINE_ID = "16f0db6c184454111"
+GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
+SEARCH_ENGINE_ID = os.environ.get('SEARCH_ENGINE_ID')
 GOOGLE_SEARCH_API_URL = "https://www.googleapis.com/customsearch/v1"
 
 @app.route('/')
@@ -26,6 +27,11 @@ def api_search():
     GET:  curl "http://localhost:5000/api/search?q=your+search+query"
     POST: curl -X POST -H "Content-Type: application/json" -d '{"query":"your search query"}' http://localhost:5000/api/search
     """
+    if not GOOGLE_API_KEY or not SEARCH_ENGINE_ID:
+        return jsonify({
+            'error': 'Search service configuration is missing. Please check GOOGLE_API_KEY and SEARCH_ENGINE_ID environment variables.'
+        }), 500
+
     if request.method == 'POST':
         data = request.get_json()
         query = data.get('query', '')
@@ -44,11 +50,16 @@ def api_search():
         }
         
         response = requests.get(GOOGLE_SEARCH_API_URL, params=params)
+        response.raise_for_status()  # This will raise an exception for bad status codes
         search_results = response.json()
         
         if 'error' in search_results:
-            print("API Error:", search_results['error'])
-            return jsonify({'error': 'Search API error'}), 500
+            error_message = search_results.get('error', {}).get('message', 'Unknown error occurred')
+            print(f"Google API Error: {error_message}")
+            return jsonify({
+                'error': f'Search API error: {error_message}',
+                'details': search_results.get('error', {})
+            }), 500
             
         results = []
         if 'items' in search_results:
@@ -65,7 +76,14 @@ def api_search():
             'results': results
         })
 
+    except requests.exceptions.RequestException as e:
+        print(f"Request Error: {str(e)}")
+        return jsonify({
+            'error': 'Failed to connect to Google Search API',
+            'details': str(e)
+        }), 500
     except Exception as e:
+        print(f"Unexpected Error: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/scrape', methods=['GET', 'POST'])
