@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Search Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .search-container {
+            text-align: center;
+            margin: 20px auto 40px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 800px;
+        }
+        .search-box {
+            display: flex;
+            align-items: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        #searchInput {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        #searchInput:focus {
+            box-shadow: 0 0 0 2px #4285f4;
+            border-color: transparent;
+        }
+        .search-button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 24px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        .search-button:hover {
+            background-color: #1557b0;
+        }
+        .search-button svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .results-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .result-item {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .result-item:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .result-title {
+            margin-bottom: 8px;
+        }
+        .result-title a {
+            color: #1a0dab;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        .result-title a:hover {
+            text-decoration: underline;
+        }
+        .result-url {
+            color: #006621;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .result-snippet {
+            color: #545454;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 16px;
+        }
+
+        .headings-section {
+            margin-top: 16px;
+            border-top: 1px solid #e8f0fe;
+            padding-top: 16px;
+        }
+        .headings-title {
+            color: #1a73e8;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        .headings-title svg {
+            width: 16px;
+            height: 16px;
+            margin-right: 6px;
+        }
+        .structure-list {
+            margin: 0;
+            padding: 0;
+        }
+        .structure-item {
+            padding: 8px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            transition: background-color 0.2s;
+            font-size: 13px;
+        }
+        .structure-item:hover {
+            background-color: #e8f0fe;
+        }
+        .heading-level {
+            display: inline-block;
+            padding: 2px 6px;
+            background-color: #1a73e8;
+            color: white;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-right: 8px;
+        }
+        .heading-text {
+            color: #202124;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #666;
+        }
+        .error {
+            color: #d93025;
+            padding: 10px;
+            background-color: #fce8e6;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Type to search...">
+            <button id="searchButton" class="search-button">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="currentColor" d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="results-container">
+        <div id="results"></div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
